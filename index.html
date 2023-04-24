@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="topbar"></div>
+    <div class="sidebar"></div>
+    <div class="main">
+      <div class="row">
+        <div class="col">
+          <div class="salesgraph-panel">
+            <div class="head">
+              <h3>Sales</h3>
+              <select class="date-filter">
+                <option>Last 7 Days</option>
+                <option>Last 15 Days</option>
+                <option>Last 30 Days</option>
+                <option>Last 1 Year</option>
+              </select>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="myChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col column">
+          <div class="sale-panel">
+            <h3>Sale Progress</h3>
+            <div class="indicator-label">
+              <h5 id="current">0</h5>
+              <h5>Target: <span id="target">250,000</span></h5>
+            </div>
+            <div class="progress">
+              <div class="progressbar">
+                <span class="indicator-cricle"></span>
+              </div>
+            </div>
+            <div class="notes">
+              <p>Last Day Sale: <span id="lastDaySale">100,000</span></p>
+              <p>
+                <span id="percentage">100%</span>
+                <span id="level">exact</span> towards the target
+              </p>
+            </div>
+          </div>
+          <div class="order-panel">
+            <h3>Open Orders</h3>
+            <p id="openOrder">10,000</p>
+            <p class="notes">
+              Open order increase by <span id="lastDaySale">10%</span> for the
+              last 30 days
+            </p>
+            <a class="viewOpenOrders">View all</a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col row">
+          <div class="reminder-panel">
+            <h3>Reminders</h3>
+            <table id="reminders">
+              <tr>
+                <td>
+                  <p>Follow up payment for Pascual Lab</p>
+                  <p>Specifics: Follow Sales</p>
+                </td>
+                <td>25/05/2023</td>
+              </tr>
+            </table>
+          </div>
+          <div class="incoming-panel">
+            <h3>Incoming Delivery</h3>
+            <table id="incomingDelivery">
+              <thead>
+                <th>From</th>
+                <th>Item</th>
+                <th>Qty</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p>USP</p>
+                  </td>
+                  <td>Alaxan FR</td>
+                  <td>5</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col">
+          <div class="outgoing-panel">
+            <h3>Outgoing Delivery</h3>
+            <table id="incomingDelivery">
+              <thead>
+                <th>Deliver To</th>
+                <th>DR Number</th>
+                <th>SI Number</th>
+                <th>Items</th>
+                <th>Total</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p>ABC Laboratory</p>
+                  </td>
+                  <td>#0000023</td>
+                  <td>#0000232</td>
+                  <td>5</td>
+                  <td>250,000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="
+    https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js
+    "></script>
+  </body>
+  <script>
+    const salesProgressData = {
+      current: "65,000",
+      target: "150,000",
+      percentage: "30%",
+      lastDaySales: "100,000",
+    };
+
+    const salesProgress = (data) => {
+      const progressbar = document.querySelector(".progressbar");
+      const target = document.querySelector("#target");
+      const current = document.querySelector("#current");
+      const percentage = document.querySelector("#percentage");
+      const lastDaySale = document.querySelector("#lastDaySale");
+      progressbar.style.setProperty("--progress", data.percentage);
+      percentage.innerHTML = data.percentage;
+      target.innerHTML = data.target;
+      current.innerHTML = data.current;
+      lastDaySale.innerHTML = data.lastDaySales;
+    };
+
+    salesProgress(salesProgressData);
+
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var chartData = {
+      labels: ["18", "19", "20", "21", "22", "23", "24"], // conditions to made
+      datasets: [
+        {
+          label: "Sales",
+          data: [100, 150, 200, 250, 300, 350, 400], // create an aync ajax function
+          backgroundColor: "white",
+          borderColor: "green",
+          borderWidth: 2,
+        },
+      ],
+    };
+    var chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+    };
+
+    // Create the chart instance
+    var myChart = new Chart(ctx, {
+      type: "line",
+      data: chartData,
+      options: chartOptions,
+    });
+
+    // Update the chart data
+    setInterval(function () {
+      chartData.datasets[0].data = chartData.datasets[0].data
+        .map
+        //   function () {
+        //     return Math.floor(Math.random() * 1000);
+        //   }
+        ();
+      myChart.update();
+    }, 5000);
+  </script>
+</html>
